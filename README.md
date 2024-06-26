@@ -1,6 +1,6 @@
 # build custom image
 
-https://github.com/stopsopa/playwright-research?tab=readme-ov-file#todo
+https://github.com/stopsopa/playwright-research?tab=readme-ov-file#build-custom-image
 
 # 🎭 Playwright
 
