@@ -49,4 +49,4 @@ RUN mkdir /ms-playwright && \
     rm -rf /ms-playwright/firefox-* && \
     rm -rf /ms-playwright/webkit-* && \
     rm -rf ~/.npm/ && \
-    chmod -R 777 /ms-playwright 
+    chmod -R 777 /ms-playwright
