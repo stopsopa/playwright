@@ -17,7 +17,7 @@ if [[ ($1 == '--help') || ($1 == '-h') || ($1 == '') || ($2 == '') ]]; then
 fi
 
 function cleanup() {
-  # rm -f "playwright-core.tar.gz"
+  echo rm -f "playwright-core.tar.gz"
 }
 
 trap "cleanup; cd $(pwd -P)" EXIT
@@ -37,4 +37,4 @@ else
   exit 1
 fi
 
-docker build --platform "${PLATFORM}" -t "$3" -f "Dockerfile.$2" .
+docker build --no-cache --platform "${PLATFORM}" -t "$3" -f "Dockerfile.$2" .
