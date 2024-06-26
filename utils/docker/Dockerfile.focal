@@ -48,5 +48,5 @@ RUN mkdir /ms-playwright && \
     rm /tmp/playwright-core.tar.gz && \
     rm -rf ~/.npm/ && \
     chmod -R 777 /ms-playwright && \
-    rm -rf /ms-playwright-agent/firefox-* && \
-    rm -rf /ms-playwright-agent/webkit-*
+    rm -rf /ms-playwright/firefox-* && \
+    rm -rf /ms-playwright/webkit-*
