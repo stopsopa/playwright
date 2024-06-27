@@ -41,9 +41,6 @@ fi
 PLATFORM="linux/amd64,linux/arm64"
 
 # from: https://unix.stackexchange.com/a/748634
-
-
-# Check if the builder already exists
 if docker buildx ls | grep -q "multi-platform-builder"; then
   echo "Builder multi-platform-builder already exists."
 else
