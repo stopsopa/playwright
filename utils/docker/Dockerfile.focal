@@ -29,24 +29,24 @@ RUN apt-get update && \
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-# 1. Add tip-of-tree Playwright package to install its browsers.
-#    The package should be built beforehand from tip-of-tree Playwright.
-COPY ./playwright-core.tar.gz /tmp/playwright-core.tar.gz
+# yarn list --patter playwright | grep playwright
+# gives
+# ├─ @playwright/test@1.45.0
+# │  └─ playwright@1.45.0
+# ├─ playwright-core@1.45.0
+# ├─ playwright@1.45.0
+# │  └─ playwright-core@1.45.0
+# so theoretically only @playwright/test is needed
 
-# 2. Bake in Playwright Agent.
-#    Playwright Agent is used to bake in browsers and browser dependencies,
-#    and run docker server later on.
-#    Browsers will be downloaded in `/ms-playwright`.
-#    Note: make sure to set 777 to the registry so that any user can access
-#    registry.
-RUN mkdir /ms-playwright && \
-    mkdir /ms-playwright-agent && \
-    cd /ms-playwright-agent && npm init -y && \
-    npm i /tmp/playwright-core.tar.gz && \
-    npm exec --no -- playwright-core mark-docker-image "${DOCKER_IMAGE_NAME_TEMPLATE}" && \
-    npm exec --no -- playwright-core install --with-deps && rm -rf /var/lib/apt/lists/* && \
-    rm /tmp/playwright-core.tar.gz && \
-    rm -rf /ms-playwright/firefox-* && \
-    rm -rf /ms-playwright/webkit-* && \
-    rm -rf ~/.npm/ && \
+RUN mkdir /ms-playwright && mkdir /ms-playwright-agent && \
+    cd /ms-playwright-agent && \
+    npm init -y && \
+    npx playwright@1.45.0 install chromium --with-deps && \
     chmod -R 777 /ms-playwright
+
+# alternatively it could be done this way too
+# RUN mkdir /ms-playwright && mkdir /ms-playwright-agent && \
+#     cd /ms-playwright-agent && \
+#     npm init -y && yarn add -D @playwright/test@1.45.0 && \
+#     node node_modules/.bin/playwright install chromium --with-deps && \
+#     chmod -R 777 /ms-playwright

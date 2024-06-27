@@ -38,4 +38,4 @@ else
   exit 1
 fi
 
-docker build --no-cache --platform "${PLATFORM}" -t "$3" -f "Dockerfile.$2" .
+DOCKER_BUILDKIT=1 docker build --platform "${PLATFORM}" -t "$3" -f "Dockerfile.$2" .
