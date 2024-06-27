@@ -17,11 +17,10 @@ if [[ ($1 == '--help') || ($1 == '-h') || ($1 == '') || ($2 == '') ]]; then
 fi
 
 function cleanup() {
-  rm -f "playwright-core.tar.gz" || true
+  rm -f "playwright-core.tar.gz"
 }
-cleanup
 
-# trap "cleanup; cd $(pwd -P)" EXIT
+trap "cleanup; cd $(pwd -P)" EXIT
 cd "$(dirname "$0")"
 
 # We rely on `./playwright-core.tar.gz` to download browsers into the docker
