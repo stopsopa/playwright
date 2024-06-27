@@ -37,4 +37,19 @@ else
   exit 1
 fi
 
-DOCKER_BUILDKIT=1 docker build --platform "${PLATFORM}" -t "$3" -f "Dockerfile.$2" .
+# force two platforms
+PLATFORM="linux/amd64,linux/arm64"
+
+# from: https://unix.stackexchange.com/a/748634
+
+
+# Check if the builder already exists
+if docker buildx ls | grep -q "multi-platform-builder"; then
+  echo "Builder multi-platform-builder already exists."
+else
+  # Create the builder if it does not exist
+  docker buildx create --use --platform=linux/arm64,linux/amd64 --name multi-platform-builder
+  echo "Builder multi-platform-builder created."
+fi
+docker buildx inspect --bootstrap
+docker buildx build --platform=linux/arm64,linux/amd64 --push --tag "$3" -f "Dockerfile.$2" .
