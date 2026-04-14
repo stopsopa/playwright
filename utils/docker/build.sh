@@ -50,3 +50,12 @@ else
 fi
 docker buildx inspect --bootstrap
 docker buildx build --platform="${PLATFORM}" --push --tag "${3}" -f "Dockerfile.${2}" .
+
+# 2. Build and LOAD only the native architecture into your local Docker
+# (Docker Desktop will automatically pick the platform matching your Mac)
+docker buildx build --load --tag "${3}" -f "Dockerfile.${2}" .
+# this way we don't have to do
+
+# docker pull monstersmart/playwright:v1.59.1-noble-just-chromium
+# to run locally
+# docker image ls

@@ -28,7 +28,7 @@ docker build --platform linux/arm64 -t myimage .
 The second build would overwrite the first one in your local image store.
 
 When it comes to modifying utils/docker/Dockerfile.noble
-we are using `npx playwright@1.59.1 install chromium --with-deps` because we have this luxury of using external build because the original image is already published. Where original project have to do it differently because the are doing it first.
+we are using `npx playwright@1.59.1 install chromium --with-deps` because we have this luxury of using external build because the original image is already published. Where original project have to do it differently because they are doing it first.
 
 But generally we are pulling just chrome not all supported browsers binaries which makes final image much smaller.
 
@@ -43,3 +43,58 @@ npm run build
 ```
 
 then new image should be visible here: https://hub.docker.com/repository/docker/monstersmart/playwright/general
+
+It is also beneficial to run:
+
+```
+# 2. Build and LOAD only the native architecture into your local Docker
+# (Docker Desktop will automatically pick the platform matching your Mac)
+docker buildx build --load --tag "${3}" -f "Dockerfile.${2}" .
+
+```
+
+this way we won't have to pull the image:
+
+```
+
+docker pull monstersmart/playwright:v1.59.1-noble-just-chromium
+
+```
+in order to test it locally
+
+```
+docker run -it monstersmart/playwright:v1.59.1-noble-just-chromium node --version
+```
+or
+
+```
+mkdir ttt
+cd ttt
+echo "nodejs v24.14.1" > .tool-versions
+cat <<EOF > package.json
+{
+  "name": "playwright-debug",
+  "version": "1.0.0",
+  "type": "module",
+  "devDependencies": {
+    "@playwright/test": "1.59.1",
+    "playwright": "1.59.1"
+  }
+}
+EOF
+pnpm install
+npx playwright install --with-deps chromium
+cat <<EOF > debug.spec.js
+import { test, expect } from '@playwright/test';
+
+test('basic test', async ({ page }) => {
+  await page.goto('https://playwright.dev/');
+  
+  const title = page.locator('.navbar__inner .navbar__title');
+  await expect(title).toHaveText('Playwright');
+  
+  await page.waitForTimeout(1000);
+});
+EOF
+npx playwright test --headed
+```
