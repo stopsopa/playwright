@@ -65,7 +65,9 @@ in order to test it locally
 ```
 docker run -it monstersmart/playwright:v1.59.1-noble-just-chromium node --version
 ```
-or
+
+
+# Ultimate test of the image
 
 ```
 mkdir ttt
@@ -84,6 +86,20 @@ cat <<EOF > package.json
 EOF
 pnpm install
 npx playwright install --with-deps chromium
+cat <<EEE > playwright.config.js
+import { devices } from "@playwright/test";
+const config = {
+  projects: [
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+      },
+    },
+  ],
+};
+export default config;
+EEE
 cat <<EOF > debug.spec.js
 import { test, expect } from '@playwright/test';
 
@@ -97,4 +113,36 @@ test('basic test', async ({ page }) => {
 });
 EOF
 npx playwright test --headed
+cat <<EEE | docker run -i --rm --ipc host --cap-add SYS_ADMIN --entrypoint="" \
+-w "/code" \
+--env NODE_API_PORT \
+ \
+ \
+--env MYSQL_HOST=host.docker.internal \
+-v "$(pwd)/debug.spec.js:/code/debug.spec.js" \
+-v "$(pwd)/playwright.config.js:/code/playwright.config.js" \
+-v "$(pwd)/package.json:/code/package.json" \
+-v "$(pwd)/node_modules:/code/node_modules" \
+--env NODE_API_HOST=host.docker.internal \
+monstersmart/playwright:v1.59.1-noble-just-chromium \
+bash
+  set -e
+  echo ===========printenv== to see PLAYWRIGHT_TEST_MATCH =========
+  printenv
+  echo "pwd: >\$(pwd)<"
+  ls -la
+  set -x
+  echo yarn.lock and package.json are required to run yarn list playwright but lets try
+  npm ls | grep playwright
+  /bin/bash node_modules/.bin/playwright --version
+  cat <<OOO
+
+value for PLAYWRIGHT_TEST_MATCH >${PLAYWRIGHT_TEST_MATCH}<
+
+  /bin/bash node_modules/.bin/playwright test --forbid-only --project=chromium --workers=1
+
+OOO
+  echo =========== inspect =========== ^^
+  /bin/bash node_modules/.bin/playwright test --forbid-only --project=chromium --workers=1
+EEE
 ```
