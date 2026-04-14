@@ -37,4 +37,25 @@ else
   exit 1
 fi
 
-docker build --platform "${PLATFORM}" -t "$3" -f "Dockerfile.$2" .
+# force two platforms
+PLATFORM="linux/amd64,linux/arm64"
+
+# from: https://unix.stackexchange.com/a/748634
+if docker buildx ls | grep -q "multi-platform-builder"; then
+  echo "Builder multi-platform-builder already exists."
+else
+  # Create the builder if it does not exist
+  docker buildx create --use --platform="${PLATFORM}" --name multi-platform-builder
+  echo "Builder multi-platform-builder created."
+fi
+docker buildx inspect --bootstrap
+docker buildx build --platform="${PLATFORM}" --push --tag "${3}" -f "Dockerfile.${2}" .
+
+# 2. Build and LOAD only the native architecture into your local Docker
+# (Docker Desktop will automatically pick the platform matching your Mac)
+docker buildx build --load --tag "${3}" -f "Dockerfile.${2}" .
+# this way we don't have to do
+
+# docker pull monstersmart/playwright:v1.59.1-noble-just-chromium
+# to run locally
+# docker image ls
