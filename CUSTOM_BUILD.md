@@ -25,6 +25,11 @@ docker build --platform linux/arm64 -t myimage .
 
 The second build would overwrite the first one in your local image store.
 
+When it comes to modifying utils/docker/Dockerfile.noble
+we are using `npx playwright@1.59.1 install chromium --with-deps` because we have this luxury of using external build because the original image is already published. Where original project have to do it differently because the are doing it first.
+
+But generally we are pulling just chrome not all supported browsers binaries which makes final image much smaller.
+
 
 
 
