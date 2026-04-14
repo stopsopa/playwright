@@ -1,7 +1,9 @@
 
 - add origin from main microsoft repository
 - create branch from latest tag on that repository
+  for current situation was branch 1.59.1 and then I have created another branch in this point of history v1.59.1-only-chrome-with-core
 - and then work with individual build files to introduce changes similar to previous PR's
+- then create PR from v1.59.1-only-chrome-with-core to v1.59.1 - to keep record of what exactly was changed
 - Then build and push
 
 
@@ -30,7 +32,17 @@ we are using `npx playwright@1.59.1 install chromium --with-deps` because we hav
 
 But generally we are pulling just chrome not all supported browsers binaries which makes final image much smaller.
 
+then build and push:
 
+```
+docker login
+npm ci
+npm run build
+/bin/bash ./utils/docker/build.sh --arm64 noble monstersmart/playwright:v1.59.1-noble-just-chromium
+
+```
+
+then new image should be visible here: https://hub.docker.com/repository/docker/monstersmart/playwright/general
 
 
 
