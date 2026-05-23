@@ -41,4 +41,4 @@ COPY ./playwright-core.tar.gz /tmp/playwright-core.tar.gz
 RUN mkdir /ms-playwright && \
     mkdir /ms-playwright-agent && \
     cd /ms-playwright-agent && npm init -y && \
-    npx playwright@v1.60.0 install chromium --with-deps && \
+    npx playwright@v1.60.0 install chromium --with-deps

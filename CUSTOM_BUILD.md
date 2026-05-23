@@ -37,6 +37,8 @@ then build and push:
 ```
 docker login
 npm ci
+docker buildx create --use --name multi-platform-builder
+docker buildx inspect --bootstrap
 npm run build
 /bin/bash ./utils/docker/build.sh --arm64 noble monstersmart/playwright:v1.60.0-noble-just-chromium
 

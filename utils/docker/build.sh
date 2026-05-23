@@ -49,6 +49,16 @@ else
   echo "Builder multi-platform-builder created."
 fi
 docker buildx inspect --bootstrap
+
+cat <<EEE
+
+docker buildx build --platform="${PLATFORM}" --push --tag "${3}" -f "Dockerfile.${2}" .
+
+
+EEE
+
+read -p "Press [Enter] key to continue..."
+
 docker buildx build --platform="${PLATFORM}" --push --tag "${3}" -f "Dockerfile.${2}" .
 
 # 2. Build and LOAD only the native architecture into your local Docker
