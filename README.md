@@ -316,3 +316,4 @@ Playwright is also available for [Python](https://playwright.dev/python/docs/int
 * [Contribution guide](CONTRIBUTING.md)
 * [Changelog](https://github.com/microsoft/playwright/releases)
 * [Discord](https://aka.ms/playwright/discord)
+
